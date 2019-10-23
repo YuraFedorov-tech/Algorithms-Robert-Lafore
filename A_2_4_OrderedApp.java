@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class ordArray {
 	private int a[];
 	private int size;
@@ -66,6 +68,51 @@ class ordArray {
 		return size;
 	}
 
+	public void fillRandom() {
+		int newSize=(int) (Math.random()*100);
+		for(int i=0;i<newSize;i++)
+			insert((int) (Math.random()*15));
+	}
+
+	public void merg(ordArray arr2) {
+		int newSize=size+arr2.size;
+		int []aNew=new int[200];
+		int th=0;
+		int ar2=0;
+		for(int i=0;i<newSize;i++) {
+			if(th==size) aNew[i]=arr2.a[ar2++];
+			else if(ar2==arr2.size)aNew[i]=a[th++];
+			else if(a[th]>arr2.a[ar2]) aNew[i]=arr2.a[ar2++];
+			else aNew[i]=a[th++];
+		}
+		a=aNew;
+		size=newSize;
+	}
+
+	public void NoDubs() {
+		ArrayList<Integer> list=new ArrayList<Integer> ();
+		FindDubs(list);
+		DeleteDubs(list);
+	}
+
+	private void DeleteDubs(ArrayList<Integer> list) {
+		for(int i=list.size()-1;i>=0;i--) {
+			int j=list.get(i);
+			for(;j<size;j++)
+				a[j]=a[j+1];
+			size--;
+		}
+		
+	}
+
+	private void FindDubs(ArrayList<Integer> list) {		
+		for(int i=1;i<size;i++) {
+			if(a[i]==a[i-1])
+				list.add(i);
+		}
+		
+	}
+
 }
 
 public class A_2_4_OrderedApp {
@@ -93,6 +140,13 @@ public class A_2_4_OrderedApp {
 
 		arr.display();
 
+		ordArray arr2 = new ordArray(100);
+		arr2.fillRandom();
+		arr2.display();
+		arr.merg(arr2);
+		arr.display();
+		arr.NoDubs();
+		arr.display();
 	}
 
 }
