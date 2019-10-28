@@ -1,15 +1,15 @@
 import java.io.*;
 
-class StackX {
-	private char[] stackArr;
+class StackX<T> {
+	private T[] stackArr;
 	int top;
 
 	public StackX(int length) {
-		stackArr = new char[length];
+		stackArr = (T[]) new Object[length];;
 		top = -1;
 	}
 
-	public void push(char key) throws Exception {
+	public void push(T key) throws Exception {
 		if (isFull())
 			throw new Exception("stack is full");
 		stackArr[++top] = key;
@@ -23,13 +23,13 @@ class StackX {
 		return top + 1;
 	}
 
-	public char pop() throws Exception {
+	public T pop() throws Exception {
 		if (isEmpty())
 			throw new Exception("stack is empty");
 		return stackArr[top--];
 	}
 
-	public char peek() throws Exception {
+	public T peek() throws Exception {
 		if (isEmpty())
 			throw new Exception("stack is empty");
 		return stackArr[top];
@@ -43,7 +43,7 @@ class StackX {
 }
 
 class InToPost {
-	StackX stack;
+	StackX <Integer>stack;
 	String output;
 	String input;
 
@@ -72,7 +72,7 @@ class InToPost {
 				gotParen();
 				break;
 			case '(':
-				stack.push(ch);
+				stack.push((int)ch);
 				break;
 			default:
 				output += ch;
@@ -80,7 +80,8 @@ class InToPost {
 			}
 		}
 		while (!stack.isEmpty()) {
-			char ch = stack.pop();
+			char ch = (char)(int)stack.pop();
+			if(ch!='(')
 			output += ch;
 		}
 		return output;
@@ -88,7 +89,7 @@ class InToPost {
 
 	private void gotParen() throws Exception {
 		while (!stack.isEmpty()) {
-			char ch = stack.pop();
+			char ch =(char)(int) stack.pop();
 			if (ch == '(')
 				return;
 			output += ch;
@@ -98,20 +99,21 @@ class InToPost {
 	}
 
 	private void gotOperator(char newOperator, int newMean) throws Exception {
-		if (!stack.isEmpty()) {
-			char oldOperator = stack.pop();
+		while (!stack.isEmpty()) {
+			char oldOperator = (char)(int)stack.pop();
 			int OldMean = FindMean(oldOperator);
 			if (OldMean == 5) {
-				stack.push(oldOperator);
-				stack.push(newOperator);
+				stack.push((int)oldOperator);
+				stack.push((int)newOperator);
 				return;
 			}
 			if (newMean > OldMean) {
-				stack.push(oldOperator);
+				stack.push((int)oldOperator);
+				break;
 			} else
 				output += oldOperator;
 		}
-		stack.push(newOperator);
+		stack.push((int)newOperator);
 	}
 
 	private int FindMean(char oldMean) {
@@ -125,7 +127,7 @@ class InToPost {
 }
 
 class ParsePost {
-	StackX stack;
+	StackX <Double>stack;
 	double ans;
 	String inputPost;
 
@@ -134,15 +136,15 @@ class ParsePost {
 		stack = new StackX(inputPost.length());
 	}
 
-	public char ParsePostFix() throws Exception {
+	public Double ParsePostFix() throws Exception {
 		for (int i = 0; i < inputPost.length(); i++) {
 			char ch = inputPost.charAt(i);
 			if (!isOperator(ch)) {
-				stack.push((char) (ch-'0'));
+				stack.push( (double)(ch-'0'));
 				continue;
 			}
-			char b=stack.pop();
-			char a=stack.pop();
+			double b=stack.pop();
+			double a=stack.pop();
 			switch (ch) {
 			case '+':
 				a+=b;
@@ -184,10 +186,10 @@ public class A_4_8_PostfixApp {
 			// Создание объекта-преобразователя
 			InToPost theTrans = new InToPost(input);
 			output = theTrans.doTrans(); // Преобразование
-			System.out.println("Postfix is " + output + '\n');
+			System.out.println("Postfix is " + output );
 			ParsePost q = new ParsePost(output);
-			char ans = q.ParsePostFix();
-			System.out.println("ans= " + (int)ans);
+			double ans = q.ParsePostFix();
+			System.out.println("ans= " + ans+"\n");
 		}
 
 	}

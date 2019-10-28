@@ -88,24 +88,30 @@ class InToPost {
 		}
 	}
 
-	private void gotOper(char chThis, int pThis) {
-		if (theSteck.isEmpty() || theSteck.peek() == '(') {
-			theSteck.push(chThis);
+
+private void gotOper(char newOperator, int newMean)  {
+	while (!theSteck.isEmpty()) {
+		char oldOperator = theSteck.pop();
+		int OldMean = getPTop(oldOperator);
+		if (OldMean == 5) {
+			theSteck.push(oldOperator);
+			theSteck.push(newOperator);
 			return;
 		}
-		char chTop = theSteck.pop();
-		int pTop = getPTop(chTop);
-		if (pTop < pThis) {
-			theSteck.push(chTop);
-		} else {
-			output += chTop;
-		}
-		theSteck.push(chThis);
+		if (newMean > OldMean) {
+			theSteck.push(oldOperator);
+			break;
+		} else
+			output += oldOperator;
 	}
-
+	theSteck.push(newOperator);
+}
+///////////////////////////////
 	private int getPTop(char chTop) {
 		if (chTop == '+' || chTop == '-')
 			return 1;
+		if(chTop == '(' )
+			return 5;
 		return 2;
 	}
 
